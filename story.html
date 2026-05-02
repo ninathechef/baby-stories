@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Little Duck's Big Day · Ngày Vui Của Vịt Con</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #FDF6EC;
+  color: #2C2416;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Design Tokens ────────────────────────────────────────── */
+:root {
+  --sun:      #FFB830;
+  --sun-lt:   #FFF3D0;
+  --sky:      #5BB8F5;
+  --sky-lt:   #E0F4FF;
+  --grass:    #5CAD5C;
+  --grass-lt: #E4F5E4;
+  --coral:    #FF7058;
+  --coral-lt: #FFE8E4;
+  --purple:   #8B6FD4;
+  --purple-lt:#EDE8FA;
+  --cream:    #FFFAF3;
+  --sand:     #F5E6C8;
+  --text:     #2C2416;
+  --muted:    #9A8C7A;
+  --border:   #EAD9C0;
+  --r-card:   22px;
+  --r-pill:   50px;
+}
+
+/* ── App Shell ────────────────────────────────────────────── */
+.app {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 0 40px;
+}
+
+/* ── Cover Header ─────────────────────────────────────────── */
+.cover-header {
+  text-align: center;
+  padding: 28px 20px 20px;
+  position: relative;
+}
+.cover-header::after {
+  content: '';
+  display: block;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--sun) 0, var(--sun) 12px, transparent 12px, transparent 20px);
+  border-radius: 2px;
+  margin-top: 14px;
+}
+.book-title {
+  font-family: 'Baloo 2', cursive;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--coral);
+  line-height: 1.15;
+  letter-spacing: -.3px;
+}
+.book-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+  font-weight: 600;
+}
+.tap-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  background: var(--sun-lt);
+  color: #7A5A00;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: var(--r-pill);
+  letter-spacing: .2px;
+}
+
+/* ── Book Card ────────────────────────────────────────────── */
+.book {
+  margin: 0 16px;
+  background: var(--cream);
+  border-radius: var(--r-card);
+  overflow: hidden;
+  box-shadow:
+    0 2px 0 #D4C4A8,
+    0 4px 0 #C8B898,
+    0 6px 20px rgba(0,0,0,0.10);
+  position: relative;
+}
+
+/* ── Page Illustration ────────────────────────────────────── */
+.illustration-wrap {
+  width: 100%;
+  position: relative;
+  background: var(--sky-lt);
+  overflow: hidden;
+}
+.illustration-wrap svg {
+  display: block;
+  width: 100%;
+}
+
+/* ── Page Content ─────────────────────────────────────────── */
+.page { display: none; }
+.page.active { display: block; }
+
+.page-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 18px 6px;
+}
+.page-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+}
+.page-num span { color: var(--coral); }
+
+.speed-toggle {
+  display: flex;
+  gap: 4px;
+}
+.spd {
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--border);
+  background: white;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: all .15s;
+}
+.spd.on { border-color: var(--grass); color: var(--grass); background: var(--grass-lt); }
+
+/* ── English Text ─────────────────────────────────────────── */
+.english-block {
+  padding: 6px 18px 10px;
+}
+.english-text {
+  font-family: 'Baloo 2', cursive;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text);
+  letter-spacing: -.2px;
+}
+.word {
+  display: inline;
+  cursor: pointer;
+  border-radius: 7px;
+  padding: 1px 3px;
+  margin: 0 1px;
+  transition: background .12s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+.word:hover  { background: var(--sun-lt); }
+.word:active { transform: scale(.92); background: var(--sun); }
+.word.lit {
+  background: var(--sun);
+  animation: wordpop .3s ease;
+}
+@keyframes wordpop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ── Vietnamese Block ─────────────────────────────────────── */
+.viet-block {
+  margin: 0 18px 14px;
+  background: var(--sand);
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+.viet-lang-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  color: #B09070;
+  margin-bottom: 4px;
+}
+.viet-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #5A4832;
+  line-height: 1.5;
+}
+
+/* ── Controls ─────────────────────────────────────────────── */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 18px 18px;
+}
+.btn-nav {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s, transform .1s, background .15s;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.btn-nav:hover:not(:disabled) { border-color: var(--coral); background: var(--coral-lt); }
+.btn-nav:active:not(:disabled) { transform: scale(.92); }
+.btn-nav:disabled { opacity: .28; cursor: default; }
+
+.btn-listen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--coral);
+  color: white;
+  border: none;
+  border-radius: var(--r-pill);
+  padding: 13px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .15s, transform .12s;
+  letter-spacing: .2px;
+}
+.btn-listen:hover   { background: #e85f46; }
+.btn-listen:active  { transform: scale(.97); }
+.btn-listen.playing { background: var(--grass); }
+
+/* ── Page Dots ────────────────────────────────────────────── */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 18px 18px;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.dot.on { background: var(--coral); transform: scale(1.35); }
+
+/* ── Vocab Bar ────────────────────────────────────────────── */
+.vocab-section {
+  margin: 14px 16px 0;
+  background: var(--cream);
+  border-radius: var(--r-card);
+  padding: 14px 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.vocab-heading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.vocab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.chip {
+  background: var(--sky-lt);
+  color: #1A6A9A;
+  border-radius: var(--r-pill);
+  padding: 6px 14px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .12s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+  letter-spacing: .2px;
+}
+.chip:hover  { background: #C2E8FF; }
+.chip:active { transform: scale(.92); }
+.chip.flash  { background: var(--sun); color: #7A5000; }
+
+/* ── Parent Tip ───────────────────────────────────────────── */
+.tip-box {
+  margin: 12px 16px 0;
+  background: var(--purple-lt);
+  border-radius: 16px;
+  padding: 13px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4A3488;
+  line-height: 1.55;
+}
+.tip-box strong { font-weight: 800; }
+
+/* ── Audio not supported ──────────────────────────────────── */
+.audio-warn {
+  display: none;
+  margin: 8px 16px;
+  background: #FFF3CD;
+  border-radius: 10px;
+  padding: 9px 13px;
+  font-size: 12px;
+  color: #856404;
+  line-height: 1.5;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 360px) {
+  .english-text { font-size: 26px; }
+  .book-title   { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Header ───────────────────────────────────── -->
+  <div class="cover-header">
+    <div class="book-title">🦆 Little Duck's Big Day</div>
+    <div class="book-subtitle">Ngày Vui Của Vịt Con</div>
+    <div class="tap-hint">👆 Chạm vào từ để nghe · Tap any word</div>
+  </div>
+
+  <div class="audio-warn" id="audioWarn">
+    Trình duyệt không hỗ trợ âm thanh. Dùng Chrome hoặc Safari nhé!
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       BOOK
+  ═══════════════════════════════════════════════ -->
+  <div class="book">
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 1 – Duck wakes up                 ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page active" id="page-0">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Sky gradient -->
+          <rect width="500" height="280" fill="#FFE8A0"/>
+          <rect width="500" height="160" fill="#FFD070" opacity=".5"/>
+          <!-- Sun -->
+          <circle cx="420" cy="60" r="45" fill="#FFB830" opacity=".9"/>
+          <circle cx="420" cy="60" r="35" fill="#FFD060"/>
+          <!-- Sun rays -->
+          <g stroke="#FFB830" stroke-width="3" stroke-linecap="round" opacity=".7">
+            <line x1="420" y1="5"  x2="420" y2="18"/>
+            <line x1="420" y1="102" x2="420" y2="115"/>
+            <line x1="365" y1="60" x2="378" y2="60"/>
+            <line x1="462" y1="60" x2="475" y2="60"/>
+            <line x1="381" y1="21" x2="390" y2="30"/>
+            <line x1="450" y1="90" x2="459" y2="99"/>
+            <line x1="381" y1="99" x2="390" y2="90"/>
+            <line x1="450" y1="30" x2="459" y2="21"/>
+          </g>
+          <!-- Ground / grass -->
+          <ellipse cx="250" cy="270" rx="280" ry="50" fill="#7DC87D"/>
+          <rect x="0" y="230" width="500" height="50" fill="#5CAD5C"/>
+          <!-- Grass blades -->
+          <g fill="#4A9E4A">
+            <ellipse cx="30"  cy="228" rx="6" ry="14"/>
+            <ellipse cx="55"  cy="225" rx="5" ry="12"/>
+            <ellipse cx="440" cy="228" rx="6" ry="14"/>
+            <ellipse cx="465" cy="225" rx="5" ry="12"/>
+            <ellipse cx="200" cy="228" rx="5" ry="11"/>
+            <ellipse cx="310" cy="226" rx="6" ry="13"/>
+          </g>
+          <!-- Pond -->
+          <ellipse cx="250" cy="220" rx="110" ry="38" fill="#5BB8F5" opacity=".75"/>
+          <ellipse cx="250" cy="218" rx="105" ry="32" fill="#7CCFF8" opacity=".6"/>
+          <!-- Nest on grass near pond -->
+          <ellipse cx="120" cy="225" rx="38" ry="14" fill="#C8A060"/>
+          <ellipse cx="120" cy="222" rx="34" ry="11" fill="#DEB870"/>
+          <!-- Egg in nest -->
+          <ellipse cx="120" cy="215" rx="14" ry="16" fill="#FFF8E8"/>
+          <!-- DUCK BODY -->
+          <ellipse cx="250" cy="200" rx="42" ry="32" fill="#FFE060"/>
+          <!-- Duck head -->
+          <circle cx="290" cy="178" r="24" fill="#FFE060"/>
+          <!-- Eye -->
+          <circle cx="300" cy="173" r="5" fill="#2C2416"/>
+          <circle cx="302" cy="171" r="2" fill="white"/>
+          <!-- Beak -->
+          <path d="M312 178 L330 174 L330 182 Z" fill="#FF9020"/>
+          <!-- Wing -->
+          <path d="M220 195 Q215 175 240 175 Q260 170 265 195 Z" fill="#FFD030"/>
+          <!-- Tail feathers -->
+          <path d="M208 200 Q195 185 200 178 Q210 180 215 195 Z" fill="#FFD030"/>
+          <!-- Feet -->
+          <path d="M245 230 L235 248 L250 248 L250 230 Z" fill="#FF9020"/>
+          <path d="M260 230 L255 248 L270 248 L265 230 Z" fill="#FF9020"/>
+          <!-- Flower -->
+          <circle cx="380" cy="220" r="8" fill="#FF8CA0"/>
+          <circle cx="394" cy="216" r="7" fill="#FFB0C0"/>
+          <circle cx="396" cy="230" r="7" fill="#FF8CA0"/>
+          <circle cx="382" cy="232" r="7" fill="#FFB0C0"/>
+          <circle cx="389" cy="224" r="6" fill="#FFE060"/>
+          <rect x="388" y="232" width="3" height="18" fill="#5CAD5C"/>
+          <!-- Butterfly -->
+          <path d="M75 130 Q65 115 55 125 Q65 140 75 130 Z" fill="#FF9ECD" opacity=".8"/>
+          <path d="M75 130 Q85 115 95 125 Q85 140 75 130 Z" fill="#FFB8DB" opacity=".8"/>
+          <path d="M75 130 Q65 140 58 152 Q68 155 75 130 Z" fill="#FF9ECD" opacity=".7"/>
+          <path d="M75 130 Q85 140 92 152 Q82 155 75 130 Z" fill="#FFB8DB" opacity=".7"/>
+          <line x1="75" y1="120" x2="68" y2="108" stroke="#7A5A00" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="75" y1="120" x2="82" y2="108" stroke="#7A5A00" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>1</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" id="spd-normal" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    id="spd-slow"   onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page1.mp3">
+          <!-- AUDIO SLOT: audio/page1.mp3 → "Good morning, little duck!" -->
+          Good morning, <span class="word">little</span> <span class="word">duck</span>!
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Chào buổi sáng, vịt con nhỏ bé!</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" id="prev-0" onclick="goPage(-1)" disabled>&#8592;</button>
+        <button class="btn-listen" id="listen-0" onclick="listenPage(0)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" onclick="goPage(1)">&#8594;</button>
+      </div>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 2 – Duck sees the pond            ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page" id="page-1">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="500" height="280" fill="#C8EDFF"/>
+          <!-- Clouds -->
+          <ellipse cx="100" cy="60"  rx="55" ry="28" fill="white" opacity=".9"/>
+          <ellipse cx="140" cy="50"  rx="40" ry="25" fill="white" opacity=".9"/>
+          <ellipse cx="60"  cy="50"  rx="35" ry="22" fill="white" opacity=".9"/>
+          <ellipse cx="380" cy="45"  rx="50" ry="24" fill="white" opacity=".8"/>
+          <ellipse cx="415" cy="38"  rx="36" ry="20" fill="white" opacity=".8"/>
+          <!-- Ground -->
+          <rect x="0" y="210" width="500" height="70" fill="#5CAD5C"/>
+          <!-- Big pond -->
+          <ellipse cx="260" cy="205" rx="185" ry="62" fill="#3EA8E8"/>
+          <ellipse cx="255" cy="200" rx="175" ry="55" fill="#5BB8F5"/>
+          <ellipse cx="250" cy="196" rx="165" ry="48" fill="#7CCFF8" opacity=".7"/>
+          <!-- Ripple rings -->
+          <ellipse cx="250" cy="196" rx="40" ry="14" fill="none" stroke="white" stroke-width="1.5" opacity=".5"/>
+          <ellipse cx="250" cy="196" rx="70" ry="25" fill="none" stroke="white" stroke-width="1" opacity=".35"/>
+          <!-- Lily pads -->
+          <ellipse cx="150" cy="205" rx="22" ry="10" fill="#4A9E4A"/>
+          <ellipse cx="350" cy="210" rx="18" ry="8"  fill="#4A9E4A"/>
+          <circle  cx="350" cy="207" r="5"           fill="#FF7090"/>
+          <!-- Duck walking toward pond -->
+          <ellipse cx="200" cy="195" rx="36" ry="26" fill="#FFE060"/>
+          <circle  cx="230" cy="175" r="20"           fill="#FFE060"/>
+          <circle  cx="240" cy="170" r="4"            fill="#2C2416"/>
+          <circle  cx="241" cy="168" r="1.5"          fill="white"/>
+          <path d="M246 174 L262 170 L262 178 Z"      fill="#FF9020"/>
+          <path d="M175 192 Q172 175 192 176 Q210 172 214 192 Z" fill="#FFD030"/>
+          <path d="M164 196 Q153 183 158 177 Q167 179 170 193 Z" fill="#FFD030"/>
+          <path d="M195 218 L187 234 L200 234 Z" fill="#FF9020"/>
+          <path d="M208 218 L204 234 L217 234 Z" fill="#FF9020"/>
+          <!-- Frog on lily pad -->
+          <ellipse cx="150" cy="201" rx="12" ry="8"  fill="#3CAA5A"/>
+          <circle  cx="145" cy="196" r="5"            fill="#3CAA5A"/>
+          <circle  cx="155" cy="196" r="5"            fill="#3CAA5A"/>
+          <circle  cx="145" cy="195" r="2"            fill="#1A7A38"/>
+          <circle  cx="155" cy="195" r="2"            fill="#1A7A38"/>
+          <!-- Reeds -->
+          <rect x="88"  y="160" width="4" height="60" fill="#8B6A3A"/>
+          <ellipse cx="90" cy="158" rx="7" ry="18"   fill="#7A5A2A"/>
+          <rect x="98"  y="170" width="3" height="50" fill="#8B6A3A"/>
+          <ellipse cx="99" cy="168" rx="6" ry="16"   fill="#7A5A2A"/>
+          <!-- Fish peek -->
+          <ellipse cx="320" cy="208" rx="14" ry="7"  fill="#FF9060" opacity=".7"/>
+          <circle  cx="328" cy="206" r="3"            fill="#CC5030" opacity=".7"/>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>2</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page2.mp3">
+          <!-- AUDIO SLOT: audio/page2.mp3 → "Duck sees a big blue pond." -->
+          <span class="word">Duck</span> sees a big <span class="word">blue</span> <span class="word">pond</span>.
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Vịt con nhìn thấy một cái hồ xanh to.</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" onclick="goPage(-1)">&#8592;</button>
+        <button class="btn-listen" id="listen-1" onclick="listenPage(1)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" onclick="goPage(1)">&#8594;</button>
+      </div>
+      <div class="dots" id="dots-1"></div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 3 – Duck jumps in                 ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page" id="page-2">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="500" height="280" fill="#A8DAFF"/>
+          <rect x="0" y="200" width="500" height="80" fill="#5CAD5C"/>
+          <!-- Pond full -->
+          <ellipse cx="250" cy="210" rx="200" ry="70" fill="#3EA8E8"/>
+          <ellipse cx="250" cy="205" rx="190" ry="62" fill="#5BB8F5"/>
+          <!-- Splash circles -->
+          <ellipse cx="250" cy="185" rx="55" ry="20" fill="none" stroke="white" stroke-width="3" opacity=".7"/>
+          <ellipse cx="250" cy="183" rx="35" ry="13" fill="none" stroke="white" stroke-width="2" opacity=".5"/>
+          <!-- Splash drops -->
+          <circle cx="210" cy="162" r="5" fill="white" opacity=".8"/>
+          <circle cx="292" cy="158" r="4" fill="white" opacity=".8"/>
+          <circle cx="225" cy="150" r="3" fill="white" opacity=".7"/>
+          <circle cx="278" cy="155" r="5" fill="white" opacity=".7"/>
+          <circle cx="250" cy="148" r="6" fill="white" opacity=".8"/>
+          <!-- Duck splashing — just head above water -->
+          <ellipse cx="250" cy="185" rx="38" ry="18" fill="#FFE060"/>
+          <circle  cx="278" cy="170" r="20" fill="#FFE060"/>
+          <circle  cx="287" cy="165" r="4"  fill="#2C2416"/>
+          <circle  cx="288" cy="163" r="1.5" fill="white"/>
+          <path d="M294 169 L312 165 L312 173 Z" fill="#FF9020"/>
+          <!-- Happy expression — open beak smile -->
+          <!-- Wing splash -->
+          <path d="M215 178 Q205 160 230 162 Q248 158 250 180 Z" fill="#FFD030" opacity=".8"/>
+          <path d="M285 178 Q295 160 270 162 Q252 158 250 180 Z" fill="#FFD030" opacity=".8"/>
+          <!-- Frog watching -->
+          <ellipse cx="80" cy="215" rx="16" ry="10" fill="#3CAA5A"/>
+          <circle  cx="74" cy="208" r="6"  fill="#3CAA5A"/>
+          <circle  cx="86" cy="208" r="6"  fill="#3CAA5A"/>
+          <circle  cx="74" cy="207" r="2.5" fill="#1A7A38"/>
+          <circle  cx="86" cy="207" r="2.5" fill="#1A7A38"/>
+          <!-- Big smile arc on frog -->
+          <path d="M75 212 Q80 216 86 212" fill="none" stroke="#1A7A38" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Fish under water -->
+          <ellipse cx="310" cy="228" rx="18" ry="9"  fill="#FF9060" opacity=".55"/>
+          <ellipse cx="180" cy="235" rx="14" ry="7"  fill="#FFCC60" opacity=".55"/>
+          <!-- Cattails -->
+          <rect x="430" y="160" width="4" height="80" fill="#8B6A3A"/>
+          <ellipse cx="432" cy="158" rx="8" ry="20"  fill="#7A5A2A"/>
+          <rect x="445" y="170" width="3" height="70" fill="#8B6A3A"/>
+          <ellipse cx="446" cy="168" rx="6" ry="17"  fill="#7A5A2A"/>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>3</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page3.mp3">
+          <!-- AUDIO SLOT: audio/page3.mp3 → "Splash! Duck jumps in the water." -->
+          <span class="word">Splash</span>! Duck <span class="word">jumps</span> in the <span class="word">water</span>.
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Tõm! Vịt con nhảy xuống nước.</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" onclick="goPage(-1)">&#8592;</button>
+        <button class="btn-listen" id="listen-2" onclick="listenPage(2)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" onclick="goPage(1)">&#8594;</button>
+      </div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 4 – Duck swims                    ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page" id="page-3">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="500" height="280" fill="#B8E8FF"/>
+          <rect x="0" y="220" width="500" height="60" fill="#5CAD5C"/>
+          <!-- Pond -->
+          <ellipse cx="250" cy="215" rx="210" ry="70" fill="#3EA8E8"/>
+          <ellipse cx="250" cy="210" rx="200" ry="62" fill="#5BB8F5"/>
+          <!-- Wave lines -->
+          <path d="M80 200 Q110 193 140 200 Q170 207 200 200" fill="none" stroke="white" stroke-width="2" opacity=".5" stroke-linecap="round"/>
+          <path d="M290 205 Q325 197 360 205 Q390 213 420 205" fill="none" stroke="white" stroke-width="2" opacity=".4" stroke-linecap="round"/>
+          <path d="M160 225 Q190 218 220 225" fill="none" stroke="white" stroke-width="1.5" opacity=".4" stroke-linecap="round"/>
+          <!-- Duck swimming -->
+          <ellipse cx="250" cy="205" rx="48" ry="28" fill="#FFE060"/>
+          <circle  cx="285" cy="183" r="22"           fill="#FFE060"/>
+          <circle  cx="294" cy="178" r="5"            fill="#2C2416"/>
+          <circle  cx="295" cy="176" r="2"            fill="white"/>
+          <path d="M301 183 L320 179 L320 187 Z"      fill="#FF9020"/>
+          <!-- Happy eyes / smile -->
+          <path d="M280 188 Q285 192 291 188" fill="none" stroke="#FF9020" stroke-width="2" stroke-linecap="round"/>
+          <path d="M220 200 Q218 182 238 183 Q258 178 262 202 Z" fill="#FFD030"/>
+          <path d="M205 204 Q192 190 198 183 Q208 186 212 203 Z" fill="#FFD030"/>
+          <!-- Wake / ripple behind duck -->
+          <path d="M202 205 Q170 205 140 210" fill="none" stroke="white" stroke-width="2.5" opacity=".6" stroke-linecap="round"/>
+          <path d="M202 211 Q165 211 130 218" fill="none" stroke="white" stroke-width="1.5" opacity=".4" stroke-linecap="round"/>
+          <!-- Fish following -->
+          <ellipse cx="140" cy="220" rx="16" ry="8"  fill="#FFCC60" opacity=".7"/>
+          <circle  cx="148" cy="217" r="3"            fill="#CC8800" opacity=".7"/>
+          <!-- Clouds -->
+          <ellipse cx="90"  cy="50" rx="55" ry="26"  fill="white" opacity=".85"/>
+          <ellipse cx="130" cy="42" rx="40" ry="22"  fill="white" opacity=".85"/>
+          <ellipse cx="58"  cy="44" rx="32" ry="20"  fill="white" opacity=".85"/>
+          <ellipse cx="380" cy="40" rx="60" ry="26"  fill="white" opacity=".8"/>
+          <ellipse cx="420" cy="33" rx="42" ry="20"  fill="white" opacity=".8"/>
+          <!-- Bird in sky -->
+          <path d="M310 80 Q320 72 330 80" fill="none" stroke="#5A8AAA" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M335 76 Q345 68 355 76" fill="none" stroke="#5A8AAA" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Dragonfly -->
+          <circle cx="430" cy="160" r="4" fill="#5A8AFF"/>
+          <ellipse cx="422" cy="156" rx="12" ry="5"  fill="#A0C8FF" opacity=".7"/>
+          <ellipse cx="438" cy="156" rx="12" ry="5"  fill="#A0C8FF" opacity=".7"/>
+          <ellipse cx="422" cy="164" rx="10" ry="4"  fill="#A0C8FF" opacity=".6"/>
+          <ellipse cx="438" cy="164" rx="10" ry="4"  fill="#A0C8FF" opacity=".6"/>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>4</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page4.mp3">
+          <!-- AUDIO SLOT: audio/page4.mp3 → "Duck swims. She is so happy!" -->
+          <span class="word">Duck</span> <span class="word">swims</span>. She is so <span class="word">happy</span>!
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Vịt con bơi lội. Bạn ấy vui lắm!</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" onclick="goPage(-1)">&#8592;</button>
+        <button class="btn-listen" id="listen-3" onclick="listenPage(3)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" onclick="goPage(1)">&#8594;</button>
+      </div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 5 – Duck finds a friend           ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page" id="page-4">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="500" height="280" fill="#D0F0C0"/>
+          <rect x="0" y="215" width="500" height="65" fill="#4A9E4A"/>
+          <!-- Flower field BG -->
+          <ellipse cx="250" cy="220" rx="220" ry="55" fill="#5CAD5C"/>
+          <!-- Flowers scattered -->
+          <g>
+            <circle cx="60"  cy="210" r="7"  fill="#FF7090"/>
+            <circle cx="60"  cy="210" r="3"  fill="#FFE060"/>
+            <circle cx="80"  cy="205" r="6"  fill="#FF90C0"/>
+            <circle cx="80"  cy="205" r="2.5" fill="#FFE060"/>
+            <circle cx="140" cy="218" r="7"  fill="#FFB830"/>
+            <circle cx="140" cy="218" r="3"  fill="white"/>
+            <circle cx="380" cy="212" r="7"  fill="#FF7090"/>
+            <circle cx="380" cy="212" r="3"  fill="#FFE060"/>
+            <circle cx="420" cy="208" r="6"  fill="#A080FF"/>
+            <circle cx="420" cy="208" r="2.5" fill="#FFE060"/>
+            <circle cx="450" cy="218" r="7"  fill="#FF90C0"/>
+            <circle cx="450" cy="218" r="3"  fill="white"/>
+          </g>
+          <!-- Trees -->
+          <rect x="35"  y="155" width="12" height="60" fill="#8B6A3A"/>
+          <ellipse cx="41"  cy="150" rx="30" ry="35"  fill="#3CAA5A"/>
+          <ellipse cx="41"  cy="140" rx="22" ry="28"  fill="#5CAD5C"/>
+          <rect x="450" y="160" width="12" height="55" fill="#8B6A3A"/>
+          <ellipse cx="456" cy="155" rx="30" ry="33"  fill="#3CAA5A"/>
+          <ellipse cx="456" cy="145" rx="22" ry="26"  fill="#5CAD5C"/>
+          <!-- Duck -->
+          <ellipse cx="195" cy="205" rx="40" ry="28" fill="#FFE060"/>
+          <circle  cx="224" cy="184" r="22"           fill="#FFE060"/>
+          <circle  cx="233" cy="179" r="4.5"          fill="#2C2416"/>
+          <circle  cx="234" cy="177" r="1.8"          fill="white"/>
+          <path d="M239 184 L258 180 L258 188 Z"      fill="#FF9020"/>
+          <path d="M162 198 Q158 181 178 182 Q198 177 202 200 Z" fill="#FFD030"/>
+          <path d="M152 202 Q140 189 146 182 Q156 185 160 200 Z" fill="#FFD030"/>
+          <path d="M186 230 L178 246 L191 246 Z" fill="#FF9020"/>
+          <path d="M200 230 L196 246 L210 246 Z" fill="#FF9020"/>
+          <!-- Frog friend jumping toward duck -->
+          <ellipse cx="320" cy="205" rx="22" ry="14" fill="#3CAA5A"/>
+          <circle  cx="311" cy="196" r="9"            fill="#3CAA5A"/>
+          <circle  cx="329" cy="196" r="9"            fill="#3CAA5A"/>
+          <circle  cx="311" cy="194" r="3.5"          fill="#1A7A38"/>
+          <circle  cx="329" cy="194" r="3.5"          fill="#1A7A38"/>
+          <path d="M312 202 Q320 207 328 202" fill="none" stroke="#1A7A38" stroke-width="2" stroke-linecap="round"/>
+          <!-- Frog legs -->
+          <path d="M298 212 Q285 225 275 218" fill="none" stroke="#3CAA5A" stroke-width="7" stroke-linecap="round"/>
+          <path d="M342 212 Q355 225 365 218" fill="none" stroke="#3CAA5A" stroke-width="7" stroke-linecap="round"/>
+          <!-- Speech bubbles / hearts -->
+          <circle cx="265" cy="175" r="10" fill="#FF7090" opacity=".85"/>
+          <path d="M260 173 Q265 168 270 173 Q265 180 260 173 Z" fill="white"/>
+          <!-- Butterfly -->
+          <path d="M130 140 Q118 124 106 135 Q118 148 130 140 Z" fill="#FFB830" opacity=".8"/>
+          <path d="M130 140 Q142 124 154 135 Q142 148 130 140 Z" fill="#FFDA70" opacity=".8"/>
+          <path d="M130 140 Q118 152 112 163 Q124 165 130 140 Z" fill="#FFB830" opacity=".7"/>
+          <path d="M130 140 Q142 152 148 163 Q136 165 130 140 Z" fill="#FFDA70" opacity=".7"/>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>5</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page5.mp3">
+          <!-- AUDIO SLOT: audio/page5.mp3 → "Look! Duck finds a green frog." -->
+          Look! Duck finds a <span class="word">green</span> <span class="word">frog</span>.
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Nhìn kìa! Vịt con gặp một chú ếch xanh.</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" onclick="goPage(-1)">&#8592;</button>
+        <button class="btn-listen" id="listen-4" onclick="listenPage(4)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" onclick="goPage(1)">&#8594;</button>
+      </div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 6 – They play together            ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page" id="page-5">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <rect width="500" height="280" fill="#FFF0D0"/>
+          <!-- Sunset sky -->
+          <rect width="500" height="280" fill="#FFD890" opacity=".4"/>
+          <ellipse cx="250" cy="0" rx="300" ry="200" fill="#FFAA50" opacity=".2"/>
+          <rect x="0" y="215" width="500" height="65" fill="#5CAD5C"/>
+          <ellipse cx="250" cy="215" rx="220" ry="55" fill="#5CAD5C"/>
+          <!-- Pond small -->
+          <ellipse cx="250" cy="218" rx="120" ry="40" fill="#5BB8F5" opacity=".7"/>
+          <ellipse cx="250" cy="215" rx="112" ry="34" fill="#7CCFF8" opacity=".6"/>
+          <!-- Duck -->
+          <ellipse cx="190" cy="205" rx="38" ry="26" fill="#FFE060"/>
+          <circle  cx="218" cy="185" r="20"           fill="#FFE060"/>
+          <circle  cx="227" cy="180" r="4"            fill="#2C2416"/>
+          <circle  cx="228" cy="178" r="1.5"          fill="white"/>
+          <path d="M233 185 L250 181 L250 189 Z"      fill="#FF9020"/>
+          <!-- Duck smile -->
+          <path d="M219 189 Q224 193 229 189" fill="none" stroke="#FF7020" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M157 198 Q154 182 174 183 Q192 179 196 200 Z" fill="#FFD030"/>
+          <path d="M147 202 Q136 190 142 183 Q151 185 154 200 Z" fill="#FFD030"/>
+          <path d="M180 228 L172 244 L185 244 Z" fill="#FF9020"/>
+          <path d="M193 228 L189 244 L202 244 Z" fill="#FF9020"/>
+          <!-- Frog next to duck -->
+          <ellipse cx="300" cy="208" rx="20" ry="13" fill="#3CAA5A"/>
+          <circle  cx="292" cy="199" r="8"            fill="#3CAA5A"/>
+          <circle  cx="308" cy="199" r="8"            fill="#3CAA5A"/>
+          <circle  cx="292" cy="198" r="3"            fill="#1A7A38"/>
+          <circle  cx="308" cy="198" r="3"            fill="#1A7A38"/>
+          <path d="M293 205 Q300 210 307 205" fill="none" stroke="#1A7A38" stroke-width="1.8" stroke-linecap="round"/>
+          <!-- Bubbles / play indicators -->
+          <circle cx="250" cy="165" r="9"  fill="none" stroke="#FFB830" stroke-width="2.5" opacity=".7"/>
+          <circle cx="265" cy="150" r="6"  fill="none" stroke="#FFB830" stroke-width="2" opacity=".5"/>
+          <circle cx="273" cy="140" r="4"  fill="none" stroke="#FFB830" stroke-width="1.5" opacity=".4"/>
+          <!-- Musical notes -->
+          <text x="340" y="150" font-size="22" fill="#FF9060" opacity=".7" font-family="serif">&#9835;</text>
+          <text x="360" y="130" font-size="16" fill="#FFB830" opacity=".6" font-family="serif">&#9833;</text>
+          <text x="120" y="145" font-size="20" fill="#5BB8F5" opacity=".6" font-family="serif">&#9835;</text>
+          <!-- Sun low in sky -->
+          <ellipse cx="430" cy="85" rx="38" ry="38" fill="#FFB830" opacity=".75"/>
+          <ellipse cx="430" cy="85" rx="28" ry="28" fill="#FFD060"/>
+          <!-- Birds -->
+          <path d="M160 70 Q172 62 184 70" fill="none" stroke="#AA7040" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M190 60 Q200 53 210 60" fill="none" stroke="#AA7040" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M50  90 Q60  83 70  90" fill="none" stroke="#AA7040" stroke-width="2"   stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>6</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page6.mp3">
+          <!-- AUDIO SLOT: audio/page6.mp3 → "They play and sing together!" -->
+          They <span class="word">play</span> and <span class="word">sing</span> together!
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Hai bạn cùng chơi và cùng hát!</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" onclick="goPage(-1)">&#8592;</button>
+        <button class="btn-listen" id="listen-5" onclick="listenPage(5)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" onclick="goPage(1)">&#8594;</button>
+      </div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 7 – Getting sleepy                ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page" id="page-6">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Night sky -->
+          <rect width="500" height="280" fill="#1A2A5A"/>
+          <rect x="0" y="195" width="500" height="85" fill="#2A5A3A"/>
+          <!-- Stars -->
+          <circle cx="60"  cy="40"  r="2.5" fill="white" opacity=".9"/>
+          <circle cx="120" cy="25"  r="2"   fill="white" opacity=".8"/>
+          <circle cx="180" cy="50"  r="3"   fill="white" opacity=".9"/>
+          <circle cx="240" cy="20"  r="2"   fill="white" opacity=".7"/>
+          <circle cx="300" cy="45"  r="2.5" fill="white" opacity=".85"/>
+          <circle cx="360" cy="30"  r="2"   fill="white" opacity=".8"/>
+          <circle cx="420" cy="55"  r="3"   fill="white" opacity=".9"/>
+          <circle cx="80"  cy="80"  r="1.5" fill="white" opacity=".6"/>
+          <circle cx="200" cy="85"  r="2"   fill="white" opacity=".7"/>
+          <circle cx="340" cy="75"  r="1.5" fill="white" opacity=".6"/>
+          <circle cx="460" cy="90"  r="2"   fill="white" opacity=".7"/>
+          <!-- Moon -->
+          <circle cx="380" cy="65" r="40" fill="#FFFAB0"/>
+          <circle cx="395" cy="55" r="35" fill="#1A2A5A"/>
+          <!-- Moon glow -->
+          <circle cx="380" cy="65" r="50" fill="none" stroke="#FFFAB0" stroke-width="2" opacity=".2"/>
+          <!-- Hill / ground -->
+          <ellipse cx="250" cy="210" rx="280" ry="70" fill="#3A7A4A"/>
+          <!-- Nest with duck sleeping -->
+          <ellipse cx="250" cy="215" rx="55" ry="20" fill="#C8A060"/>
+          <ellipse cx="250" cy="210" rx="50" ry="15" fill="#DEB870"/>
+          <!-- Duck sleeping curled -->
+          <ellipse cx="250" cy="198" rx="44" ry="24" fill="#FFE060"/>
+          <circle  cx="282" cy="182" r="20"           fill="#FFE060"/>
+          <!-- Sleeping eye (closed) -->
+          <path d="M278 180 Q283 176 288 180" fill="none" stroke="#2C2416" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Beak -->
+          <path d="M290 185 L305 183 L305 189 Z" fill="#FF9020"/>
+          <!-- Wing tucked -->
+          <path d="M218 193 Q215 176 234 177 Q252 173 256 195 Z" fill="#FFD030"/>
+          <!-- Z z z -->
+          <text x="308" y="172" font-family="'Baloo 2',cursive" font-size="18" fill="#A0B8FF" opacity=".8" font-weight="700">z</text>
+          <text x="325" y="155" font-family="'Baloo 2',cursive" font-size="14" fill="#A0B8FF" opacity=".6" font-weight="700">z</text>
+          <text x="338" y="143" font-family="'Baloo 2',cursive" font-size="10" fill="#A0B8FF" opacity=".4" font-weight="700">z</text>
+          <!-- Fireflies -->
+          <circle cx="100" cy="170" r="3.5" fill="#EEFF80" opacity=".8"/>
+          <circle cx="100" cy="170" r="7"   fill="#EEFF80" opacity=".2"/>
+          <circle cx="400" cy="180" r="3"   fill="#EEFF80" opacity=".7"/>
+          <circle cx="400" cy="180" r="6"   fill="#EEFF80" opacity=".18"/>
+          <circle cx="160" cy="185" r="2.5" fill="#EEFF80" opacity=".65"/>
+          <circle cx="160" cy="185" r="5"   fill="#EEFF80" opacity=".16"/>
+          <!-- Frog sleeping on lily pad -->
+          <ellipse cx="420" cy="218" rx="20" ry="9" fill="#4A9E4A"/>
+          <ellipse cx="420" cy="215" rx="16" ry="10" fill="#3CAA5A"/>
+          <path d="M415 213 Q420 210 425 213" fill="none" stroke="#1A7A38" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M415 213 Q416 216 420 217 Q424 216 425 213" fill="none" stroke="#1A7A38" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>7</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page7.mp3">
+          <!-- AUDIO SLOT: audio/page7.mp3 → "Duck is tired. Time to sleep." -->
+          Duck is <span class="word">tired</span>. Time to <span class="word">sleep</span>.
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Vịt con mệt rồi. Đến giờ đi ngủ thôi.</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" onclick="goPage(-1)">&#8592;</button>
+        <button class="btn-listen" id="listen-6" onclick="listenPage(6)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" onclick="goPage(1)">&#8594;</button>
+      </div>
+    </div>
+
+    <!-- ╔══════════════════════════════════════════╗
+         ║  PAGE 8 – Goodnight                     ║
+         ╚══════════════════════════════════════════╝ -->
+    <div class="page" id="page-7">
+      <div class="illustration-wrap">
+        <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Deep night sky -->
+          <rect width="500" height="280" fill="#0D1A3A"/>
+          <rect x="0" y="195" width="500" height="85" fill="#1A4A2A"/>
+          <!-- Stars many -->
+          <circle cx="40"  cy="30"  r="2"   fill="white" opacity=".9"/>
+          <circle cx="90"  cy="55"  r="2.5" fill="white" opacity=".8"/>
+          <circle cx="145" cy="20"  r="1.5" fill="white" opacity=".7"/>
+          <circle cx="200" cy="42"  r="2"   fill="white" opacity=".85"/>
+          <circle cx="255" cy="15"  r="3"   fill="white" opacity=".9"/>
+          <circle cx="310" cy="38"  r="2"   fill="white" opacity=".8"/>
+          <circle cx="365" cy="22"  r="1.5" fill="white" opacity=".7"/>
+          <circle cx="415" cy="48"  r="2.5" fill="white" opacity=".85"/>
+          <circle cx="468" cy="32"  r="2"   fill="white" opacity=".75"/>
+          <circle cx="70"  cy="90"  r="1.5" fill="white" opacity=".55"/>
+          <circle cx="175" cy="80"  r="2"   fill="white" opacity=".65"/>
+          <circle cx="285" cy="95"  r="1.5" fill="white" opacity=".55"/>
+          <circle cx="390" cy="82"  r="2"   fill="white" opacity=".6"/>
+          <circle cx="470" cy="72"  r="1.5" fill="white" opacity=".55"/>
+          <!-- Big moon -->
+          <circle cx="120" cy="80" r="48" fill="#FFF8D0" opacity=".95"/>
+          <circle cx="138" cy="66" r="42" fill="#0D1A3A"/>
+          <!-- Moon shine -->
+          <circle cx="120" cy="80" r="60" fill="none" stroke="#FFF8D0" stroke-width="3" opacity=".12"/>
+          <!-- Ground rolling hill -->
+          <ellipse cx="250" cy="210" rx="290" ry="75" fill="#1A5A2A"/>
+          <!-- House/nest cozy -->
+          <rect x="195" y="175" width="110" height="50" rx="8" fill="#C8A060"/>
+          <polygon points="170,178 250,140 330,178" fill="#E8B870"/>
+          <rect x="230" y="190" width="40" height="35" rx="4" fill="#8B6A3A"/>
+          <!-- Window glow -->
+          <rect x="202" y="183" width="28" height="22" rx="4" fill="#FFE8A0" opacity=".9"/>
+          <rect x="270" y="183" width="28" height="22" rx="4" fill="#FFE8A0" opacity=".9"/>
+          <!-- Duck silhouette in window -->
+          <ellipse cx="216" cy="196" rx="9" ry="6"    fill="#FFD030" opacity=".8"/>
+          <circle  cx="224" cy="190" r="6"             fill="#FFD030" opacity=".8"/>
+          <!-- Stars (bigger) falling -->
+          <text x="342" y="75"  font-family="serif" font-size="20" fill="#FFE060" opacity=".9">&#9733;</text>
+          <text x="38"  y="155" font-family="serif" font-size="16" fill="#FFE060" opacity=".7">&#9733;</text>
+          <text x="460" y="130" font-family="serif" font-size="14" fill="#FFE060" opacity=".6">&#9733;</text>
+          <!-- Firefly cluster -->
+          <circle cx="370" cy="180" r="3"   fill="#EEFF80" opacity=".85"/>
+          <circle cx="370" cy="180" r="7"   fill="#EEFF80" opacity=".18"/>
+          <circle cx="390" cy="190" r="2.5" fill="#EEFF80" opacity=".7"/>
+          <circle cx="390" cy="190" r="5"   fill="#EEFF80" opacity=".15"/>
+          <circle cx="350" cy="195" r="2"   fill="#EEFF80" opacity=".65"/>
+          <!-- Text inside scene -->
+          <text x="250" y="135" text-anchor="middle" font-family="'Baloo 2',cursive" font-size="16" fill="#FFF8D0" opacity=".7" font-weight="600">Good night ✨</text>
+        </svg>
+      </div>
+      <div class="page-top-bar">
+        <div class="page-num">Trang <span>8</span> / 8</div>
+        <div class="speed-toggle">
+          <button class="spd on" onclick="setSpeed(1,this)">Bình thường</button>
+          <button class="spd"    onclick="setSpeed(.7,this)">Chậm</button>
+        </div>
+      </div>
+      <div class="english-block">
+        <div class="english-text" data-audio="audio/page8.mp3">
+          <!-- AUDIO SLOT: audio/page8.mp3 → "Good night, little duck. We love you!" -->
+          Good <span class="word">night</span>, little duck. We <span class="word">love</span> you!
+        </div>
+      </div>
+      <div class="viet-block">
+        <div class="viet-lang-label">Tiếng Việt</div>
+        <div class="viet-text">Chúc ngủ ngon, vịt con nhỏ. Chúng ta yêu con!</div>
+      </div>
+      <div class="controls">
+        <button class="btn-nav" onclick="goPage(-1)">&#8592;</button>
+        <button class="btn-listen" id="listen-7" onclick="listenPage(7)">
+          <span>&#9654;</span> <span>Nghe · Listen</span>
+        </button>
+        <button class="btn-nav" id="next-7" onclick="goPage(1)" disabled>&#8594;</button>
+      </div>
+      <!-- Restart button on last page -->
+      <div style="text-align:center; padding: 0 20px 18px;">
+        <button onclick="goToPage(0)" style="background:none;border:2px solid var(--border);border-radius:var(--r-pill);padding:9px 24px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;">
+          ↩ Đọc lại từ đầu · Read again
+        </button>
+      </div>
+    </div>
+
+    <!-- Page dots (rendered by JS) -->
+    <div class="dots" id="main-dots"></div>
+
+  </div><!-- /book -->
+
+  <!-- ── Vocab Bar ────────────────────────────────── -->
+  <div class="vocab-section">
+    <div class="vocab-heading">Từ vựng hôm nay · Today's words — chạm để nghe</div>
+    <div class="vocab-chips" id="vocab-chips"></div>
+  </div>
+
+  <!-- ── Parent Tip ──────────────────────────────── -->
+  <div class="tip-box">
+    💡 <strong>Gợi ý cho mẹ / bố:</strong> Chỉ vào hình và hỏi "Where is the duck?" — rồi cùng bé chạm vào từng từ và lặp lại nhé. 5 phút mỗi ngày là đủ! 
+  </div>
+
+</div><!-- /app -->
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════ -->
+<script>
+// ── Story data ─────────────────────────────────────────────
+// AUDIO SLOTS: Place your MP3 files in an "audio/" folder.
+// Each file corresponds to one page sentence.
+// To generate audio: paste the English text into ChatGPT and
+// ask "Read this aloud with a warm, clear voice for a child",
+// then download and save as the filename below.
+const PAGES = [
+  { audio: "audio/page1.mp3", text: "Good morning, little duck!" },
+  { audio: "audio/page2.mp3", text: "Duck sees a big blue pond." },
+  { audio: "audio/page3.mp3", text: "Splash! Duck jumps in the water." },
+  { audio: "audio/page4.mp3", text: "Duck swims. She is so happy!" },
+  { audio: "audio/page5.mp3", text: "Look! Duck finds a green frog." },
+  { audio: "audio/page6.mp3", text: "They play and sing together!" },
+  { audio: "audio/page7.mp3", text: "Duck is tired. Time to sleep." },
+  { audio: "audio/page8.mp3", text: "Good night, little duck. We love you!" },
+];
+
+const VOCAB = ["duck","pond","water","swim","jump","frog","green","happy","sleep","love","morning","play"];
+
+// ── State ──────────────────────────────────────────────────
+let currentPage = 0;
+let speechRate  = 1.0;
+let isPlaying   = false;
+let currentAudio = null;
+
+const synth  = window.speechSynthesis;
+const hasTTS = !!synth;
+if (!hasTTS) document.getElementById('audioWarn').style.display = 'block';
+
+// ── Build dots ─────────────────────────────────────────────
+function buildDots() {
+  const c = document.getElementById('main-dots');
+  c.innerHTML = '';
+  PAGES.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === currentPage ? ' on' : '');
+    d.onclick = () => goToPage(i);
+    c.appendChild(d);
+  });
+}
+
+// ── Build vocab chips ──────────────────────────────────────
+function buildVocab() {
+  const c = document.getElementById('vocab-chips');
+  VOCAB.forEach(w => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = w;
+    chip.addEventListener('click', () => {
+      speakWord(w);
+      chip.classList.add('flash');
+      setTimeout(() => chip.classList.remove('flash'), 700);
+    });
+    c.appendChild(chip);
+  });
+}
+
+// ── Word tap listeners ─────────────────────────────────────
+function attachWordListeners() {
+  document.querySelectorAll('.word').forEach(el => {
+    el.addEventListener('click', function() {
+      const word = this.textContent.replace(/[^a-zA-Z']/g, '');
+      speakWord(word);
+      this.classList.add('lit');
+      setTimeout(() => this.classList.remove('lit'), 500);
+    });
+  });
+}
+
+// ── Speech ─────────────────────────────────────────────────
+function getVoice() {
+  const voices = synth.getVoices();
+  return voices.find(v => /Samantha|Karen|Moira|Victoria|Female/i.test(v.name) && v.lang.startsWith('en'))
+      || voices.find(v => v.lang.startsWith('en-US') || v.lang.startsWith('en-GB'))
+      || voices.find(v => v.lang.startsWith('en'))
+      || null;
+}
+
+function speakWord(text) {
+  if (!hasTTS) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate  = speechRate;
+  u.pitch = 1.05;
+  u.volume = 1;
+  const v = getVoice();
+  if (v) u.voice = v;
+  synth.speak(u);
+}
+
+// ── Try MP3 first, fallback to TTS ────────────────────────
+function listenPage(idx) {
+  stopAll();
+  const page = PAGES[idx];
+  const btn  = document.getElementById('listen-' + idx);
+
+  // Try real audio file first
+  const audio = new Audio(page.audio);
+  audio.playbackRate = speechRate;
+
+  audio.onplay = () => {
+    isPlaying = true;
+    currentAudio = audio;
+    if (btn) { btn.classList.add('playing'); btn.querySelector('span').textContent = '■'; }
+  };
+  audio.onended = audio.onerror = () => {
+    isPlaying = false;
+    currentAudio = null;
+    if (btn) { btn.classList.remove('playing'); btn.querySelector('span').textContent = '▶'; }
+    // Fallback to TTS if file missing (onerror)
+    if (event.type === 'error') {
+      speakWord(page.text);
+    }
+  };
+
+  audio.play().catch(() => {
+    // No file yet — use TTS
+    if (btn) { btn.classList.add('playing'); btn.querySelector('span').textContent = '■'; }
+    const u = new SpeechSynthesisUtterance(page.text);
+    u.rate  = speechRate;
+    u.pitch = 1.05;
+    const v = getVoice();
+    if (v) u.voice = v;
+    u.onend = () => {
+      isPlaying = false;
+      if (btn) { btn.classList.remove('playing'); btn.querySelector('span').textContent = '▶'; }
+    };
+    synth.speak(u);
+    isPlaying = true;
+  });
+}
+
+function stopAll() {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (hasTTS) synth.cancel();
+  isPlaying = false;
+  document.querySelectorAll('.btn-listen').forEach(b => {
+    b.classList.remove('playing');
+    b.querySelector('span').textContent = '▶';
+  });
+}
+
+// ── Navigation ─────────────────────────────────────────────
+function goPage(dir) { goToPage(currentPage + dir); }
+
+function goToPage(idx) {
+  if (idx < 0 || idx >= PAGES.length) return;
+  stopAll();
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  currentPage = idx;
+  document.getElementById('page-' + currentPage).classList.add('active');
+  document.querySelectorAll('#main-dots .dot').forEach((d, i) => {
+    d.classList.toggle('on', i === currentPage);
+  });
+  // Update speed toggles to reflect current state
+  document.querySelectorAll('.spd').forEach(b => {
+    b.classList.toggle('on',
+      (b.textContent.includes('ình') && speechRate === 1.0) ||
+      (b.textContent.includes('hậm') && speechRate < 1.0)
+    );
+  });
+}
+
+// ── Speed toggle ───────────────────────────────────────────
+function setSpeed(rate, btn) {
+  speechRate = rate;
+  // Toggle siblings in same .speed-toggle
+  btn.closest('.speed-toggle').querySelectorAll('.spd').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+// ── Init ───────────────────────────────────────────────────
+buildDots();
+buildVocab();
+attachWordListeners();
+if (hasTTS && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = () => {};
+</script>
+</body>
+</html>
